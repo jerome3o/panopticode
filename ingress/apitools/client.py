@@ -1,7 +1,7 @@
 from typing import Generic, List, Type
 import json
-from ingress.models.api import Crud, Dto
-from ingress.models.http import HttpClient, RequestsHttpClient
+from apitools.models.api import Crud, Dto
+from apitools.models.http import HttpClient, RequestsHttpClient
 
 
 def from_raw(value: str) -> dict:

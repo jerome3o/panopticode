@@ -8,7 +8,7 @@ from pydantic import BaseModel, BaseSettings, Field
 from pymongo import MongoClient
 from pymongo.collection import Collection
 
-from ingress.models.api import Crud, MongoModel
+from apitools.models.api import Crud, MongoModel
 
 _logger = logging.getLogger(__name__)
 
@@ -104,6 +104,7 @@ class MongoCrud(Generic[_DtoT], Crud[_DtoT]):
             replacement=item_json,
             upsert=True,
         )
+        result = result or self._collection.find_one(item_json)
         return self._to_dto(self._try_parse_dict(result))
 
     def update(self, item_id: str, item: _DtoT) -> _DtoT:

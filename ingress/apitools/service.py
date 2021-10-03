@@ -1,6 +1,6 @@
 from typing import Type, List
 from fastapi import FastAPI
-from ingress.models.api import Crud, Dto
+from apitools.models.api import Crud, Dto
 
 
 def configure_api(
