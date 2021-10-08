@@ -90,8 +90,12 @@ async function main() {
     upload(dataFolder);
 }
 
-main();
 
-// <input title="" autocomplete="off" name="username" type="text" 
-// placeholder="" spellcheck="false" class="cf-input-field" data-testid="username" 
-// value = "" > < /input>
+main()
+setInterval(
+        main,
+        1000 * 60 //* 60 * 24
+    )
+    // <input title="" autocomplete="off" name="username" type="text" 
+    // placeholder="" spellcheck="false" class="cf-input-field" data-testid="username" 
+    // value = "" > < /input>
