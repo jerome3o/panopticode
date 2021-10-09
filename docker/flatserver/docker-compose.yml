@@ -33,9 +33,11 @@ services:
 
 
   scraper:
-    image: jerome3o/bankscraper:1.0.1
+    image: testscraper:1
     restart: always
     environment:
-      LOGIN: "$$LOGIN"
-      PASSWORD: "$$PASSWORD"
+      LOGIN: "$LOGIN"
+      PASSWORD: "$PASSWORD"
       INGESTION_SERVICE: http://ingress:8000/bank-statement
+    volumes:
+      - ./data/:/app/data/

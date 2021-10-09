@@ -31,6 +31,8 @@ async function scrape() {
     await page.type('input[id="password"]', process.env.PASSWORD);
 
     await page.keyboard.press('Enter');
+    await page.waitForTimeout(3000);
+    await page.screenshot({path: "data/img.png"});
 
     async function getHubFrame(page) {
         const frameHandle = await page.waitForSelector("#everyday-banking-hub")
