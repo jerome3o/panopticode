@@ -94,7 +94,7 @@ async function main() {
 main()
 setInterval(
         main,
-        1000 * 60 //* 60 * 24
+        1000 * 60 * 60 * 24
     )
     // <input title="" autocomplete="off" name="username" type="text" 
     // placeholder="" spellcheck="false" class="cf-input-field" data-testid="username" 
