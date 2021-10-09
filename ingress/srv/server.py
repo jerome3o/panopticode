@@ -20,7 +20,7 @@ crud = MongoCrud(
     model=Transaction,
     collection=client["panopticon"]["bank"],
 )
-configure_api(app, crud, Transaction, "transactions")
+configure_api(app, crud, Transaction, "/transactions")
 
 
 @app.post('/bank-statement')
