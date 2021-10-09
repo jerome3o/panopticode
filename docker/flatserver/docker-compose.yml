@@ -33,7 +33,7 @@ services:
 
 
   scraper:
-    image: jerome3/bankscraper:0.0.2
+    image: jerome3o/bankscraper:0.0.2
     restart: always
     environment:
       LOGIN: "$LOGIN"
