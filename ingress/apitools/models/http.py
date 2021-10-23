@@ -48,19 +48,19 @@ class RequestsHttpClient(HttpClient):
     @_catch_connection_error("GET")
     def get(self, url: str, data=None, params: dict = None, headers: dict = None):
         res = requests.get(url, data=data, params=params, headers=headers)
-        return HttpResponse(res.status_code, res.content.decode("utf-8"), res)
+        return HttpResponse(status_code=res.status_code, body=res.content.decode("utf-8"), raw=res)
 
     @_catch_connection_error("POST")
     def post(self, url: str, data=None, params: dict = None, headers: dict = None):
         res = requests.post(url, data=data, params=params, headers=headers)
-        return HttpResponse(res.status_code, res.content.decode("utf-8"), res)
+        return HttpResponse(status_code=res.status_code, body=res.content.decode("utf-8"), raw=res)
 
     @_catch_connection_error("PUT")
     def put(self, url: str, data=None, params: dict = None, headers: dict = None):
         res = requests.put(url, data=data, params=params, headers=headers)
-        return HttpResponse(res.status_code, res.content.decode("utf-8"), res)
+        return HttpResponse(status_code=res.status_code, body=res.content.decode("utf-8"), raw=res)
 
     @_catch_connection_error("DELETE")
     def delete(self, url: str, data=None, params: dict = None, headers: dict = None):
         res = requests.delete(url, data=data, params=params, headers=headers)
-        return HttpResponse(res.status_code, res.content.decode("utf-8"), res)
+        return HttpResponse(status_code=res.status_code, body=res.content.decode("utf-8"), raw=res)

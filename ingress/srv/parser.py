@@ -1,5 +1,5 @@
 from typing import List
-from srv.models import Transaction
+from models import Transaction
 import pandas as pd
 from io import StringIO
 

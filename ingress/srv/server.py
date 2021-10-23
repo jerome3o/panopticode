@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from fastapi import FastAPI
 
 from srv.parser import parse_statement
-from srv.models import Transaction
+from models import ChromeHistoryItem, Transaction
 
 from apitools.service import configure_api
 from apitools.mongodb import MongoCrud, get_client
@@ -16,16 +16,22 @@ class Statement(BaseModel):
 
 
 client = get_client()
-crud = MongoCrud(
+transaction_crud = MongoCrud(
     model=Transaction,
     collection=client["panopticon"]["bank"],
 )
-configure_api(app, crud, Transaction, "/transactions")
+browsing_history_crud = MongoCrud(
+    model=ChromeHistoryItem,
+    collection=client["panopticon"]["chrome"],
+)
+
+configure_api(app, transaction_crud, Transaction, "/transactions")
+configure_api(app, browsing_history_crud, Transaction, "/browsing_history")
 
 
-@app.post('/bank-statement')
+@app.post("/bank-statement")
 def bank_statement_ingress(statement: Statement):
     transactions = parse_statement(statement.text)
     for transaction in transactions:
-        crud.idempotent_create(transaction)
+        transaction_crud.idempotent_create(transaction)
     return {"result": "success"}
