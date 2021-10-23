@@ -1,8 +1,7 @@
 # Use root/example as user/password credentials
-version: '3.1'
+version: "3.1"
 
 services:
-
   mongo:
     image: mongo
     restart: always
@@ -21,7 +20,7 @@ services:
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
 
   ingress:
-    image: jerome3o/bankingress:0.0.3
+    image: jerome3o/ingress:0.0.4
     restart: always
     ports:
       - 8000:8000
@@ -30,7 +29,6 @@ services:
       MONGO_DB_HOST: mongo
       MONGO_DB_USERNAME: root
       MONGO_DB_PASSWORD: example
-
 
   scraper:
     image: jerome3o/bankscraper:0.0.2
