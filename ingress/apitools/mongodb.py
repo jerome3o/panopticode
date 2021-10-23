@@ -39,6 +39,7 @@ class Converter(Generic[_StoreT, _DtoT]):
     from_dto: Callable[[_DtoT], _StoreT]
     to_dto: Callable[[_StoreT], _DtoT]
 
+
 def str_id(doc: dict) -> dict:
     return {k: str(v) if isinstance(v, ObjectId) else v for k, v in doc.items()}
 
@@ -64,16 +65,22 @@ class MongoCrud(Generic[_DtoT], Crud[_DtoT]):
     ):
         self._model: BaseModel = model
         self._collection = collection
-        
-        self._dto_model = dto_converter.dto_model if dto_converter is not None else self._model
-        self._from_dto = dto_converter.from_dto if dto_converter is not None else (lambda x: x)
-        self._to_dto = dto_converter.to_dto if dto_converter is not None else (lambda x: x)
-    
+
+        self._dto_model = (
+            dto_converter.dto_model if dto_converter is not None else self._model
+        )
+        self._from_dto = (
+            dto_converter.from_dto if dto_converter is not None else (lambda x: x)
+        )
+        self._to_dto = (
+            dto_converter.to_dto if dto_converter is not None else (lambda x: x)
+        )
+
     def _try_parse_dict(self, item: dict):
-        try: 
+        try:
             return self._model.parse_obj(str_id(item))
         except ValueError:
-            _logger.exception(f"Failed to parse {self.model.__name__}: \n{item}")
+            _logger.exception(f"Failed to parse {self._model.__name__}: \n{item}")
             return None
 
     def get_all(self) -> List[_DtoT]:
@@ -83,7 +90,7 @@ class MongoCrud(Generic[_DtoT], Crud[_DtoT]):
                 map(
                     lambda doc: self._to_dto(self._try_parse_dict(doc)),
                     self._collection.find({}),
-                )
+                ),
             )
         )
 

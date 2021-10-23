@@ -26,7 +26,7 @@ browsing_history_crud = MongoCrud(
 )
 
 configure_api(app, transaction_crud, Transaction, "/transactions")
-configure_api(app, browsing_history_crud, Transaction, "/browsing_history")
+configure_api(app, browsing_history_crud, ChromeHistoryItem, "/browsing_history")
 
 
 @app.post("/bank-statement")

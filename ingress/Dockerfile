@@ -6,5 +6,6 @@ COPY Pipfile* ./
 RUN pipenv install --deploy
 COPY apitools/ ./apitools/
 COPY srv/ ./srv/
+COPY models.py .
 
 CMD ["pipenv", "run", "serve"]

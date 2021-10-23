@@ -4,8 +4,8 @@ from apitools.models.api import Crud, Dto
 
 
 def configure_api(
-    app: FastAPI, 
-    api: Crud, 
+    app: FastAPI,
+    api: Crud,
     dto_class: Type[Dto],
     endpoint_base: str,
 ) -> None:
@@ -15,21 +15,20 @@ def configure_api(
 
     @app.get(endpoint_base + "/{item_id}", response_model=dto_class)
     def get(item_id: str) -> dto_class:
-        return api.get()
+        return api.get(item_id)
 
     @app.post(endpoint_base, response_model=dto_class)
     def create(item: dto_class) -> dto_class:
-        return api.create()
+        return api.create(item)
 
     @app.put(endpoint_base, response_model=dto_class)
     def idempotent_create(item: dto_class) -> dto_class:
-        return api.idempotent_create()
+        return api.idempotent_create(item)
 
     @app.post(endpoint_base + "/{item_id}", response_model=dto_class)
     def update(item_id: str, item: dto_class) -> dto_class:
-        return api.update()
+        return api.update(item_id, item)
 
     @app.delete(endpoint_base + "/{item_id}", response_model=int)
     def delete(item_id: str) -> int:
-        return api.delete()
-
+        return api.delete(item_id)

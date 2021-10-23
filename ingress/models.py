@@ -18,3 +18,6 @@ class ChromeHistoryItem(BaseModel):
     url: str = Field(alias="url")
     typed_count: int = Field(alias="typedCount")
     visit_count: int = Field(alias="visitCount")
+
+    class Config:
+        allow_population_by_field_name = True

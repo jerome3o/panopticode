@@ -17,3 +17,4 @@ python_version = "3.8"
 
 [scripts]
 serve = "uvicorn srv.server:app --host=0.0.0.0"
+debug = "uvicorn srv.server:app --host=0.0.0.0 --reload"
