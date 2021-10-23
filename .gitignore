@@ -5,4 +5,4 @@ node_modules/
 seed_data/
 .ipynb_checkpoints/
 __pycache__/
-analysis/
+analysis/altair-data*.json
