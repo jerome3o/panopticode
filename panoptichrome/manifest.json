@@ -1,0 +1,25 @@
+{
+    "name": "Panoptichrome",
+    "description": "Tracking my own browser history",
+    "version": "1.0",
+    "manifest_version": 3,
+    "background": {
+        "service_worker": "background.js"
+    },
+    "permissions": [
+        "storage",
+        "activeTab",
+        "scripting",
+        "history"
+    ],
+    "host_permissions": [
+        "http://*/*"
+    ],
+    "icons": {
+        "16": "/images/panopticon16.png",
+        "32": "/images/panopticon32.png",
+        "48": "/images/panopticon48.png",
+        "128": "/images/panopticon128.png"
+    },
+    "options_page": "options.html"
+}

@@ -8,6 +8,8 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - panopticodemongo:/data/db
 
   mongo-express:
     image: mongo-express
@@ -39,3 +41,6 @@ services:
       INGESTION_SERVICE: http://ingress:8000/bank-statement
     volumes:
       - ./data/:/app/data/
+
+volumes:
+  panopticodemongo:
