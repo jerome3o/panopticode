@@ -42,5 +42,13 @@ services:
     volumes:
       - ./data/:/app/data/
 
+  analysis:
+    image: jerome3o/analysis:0.0.1
+    restart: always
+    environment:
+      INGRESS_SERVICE: http://ingress:8000
+    ports:
+      - 8001:8001
+
 volumes:
   panopticodemongo:
