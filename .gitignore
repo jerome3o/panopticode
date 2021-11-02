@@ -6,3 +6,4 @@ seed_data/
 .ipynb_checkpoints/
 __pycache__/
 analysis/altair-data*.json
+analysis/static/
