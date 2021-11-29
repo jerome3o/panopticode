@@ -7,3 +7,6 @@ seed_data/
 __pycache__/
 analysis/altair-data*.json
 analysis/static/
+
+.pyc
+scratch/

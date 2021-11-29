@@ -1,6 +1,9 @@
+from typing import List
 from pydantic import BaseModel
 from fastapi import FastAPI
+import uvicorn
 
+from srv.transaction import TransactionsCrud
 from srv.parser import parse_statement
 from models import ChromeHistoryItem, Transaction
 
@@ -16,7 +19,7 @@ class Statement(BaseModel):
 
 
 client = get_client()
-transaction_crud = MongoCrud(
+transaction_crud = TransactionsCrud(
     model=Transaction,
     collection=client["panopticon"]["bank"],
 )
@@ -24,6 +27,10 @@ browsing_history_crud = MongoCrud(
     model=ChromeHistoryItem,
     collection=client["panopticon"]["chrome"],
 )
+
+
+app.get("/transactions/find", response_model=List[Transaction])(transaction_crud.find)
+
 
 configure_api(app, transaction_crud, Transaction, "/transactions")
 configure_api(app, browsing_history_crud, ChromeHistoryItem, "/browsing_history")
@@ -35,3 +42,14 @@ def bank_statement_ingress(statement: Statement):
     for transaction in transactions:
         transaction_crud.idempotent_create(transaction)
     return {"result": "success"}
+
+
+def main():
+    uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    import logging
+
+    logging.basicConfig(level=logging.INFO)
+    main()
