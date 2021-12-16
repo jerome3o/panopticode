@@ -43,7 +43,7 @@ services:
       - ./data/:/app/data/
 
   analysis:
-    image: jerome3o/analysis:0.0.3
+    image: jerome3o/analysis:0.0.4
     restart: always
     environment:
       INGRESS_SERVICE: http://ingress:8000
