@@ -1,5 +1,6 @@
 .env
 data/
+venv/
 node_modules/
 .vscode/
 seed_data/
