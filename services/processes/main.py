@@ -1,6 +1,7 @@
 import os
 from fastapi import FastAPI, HTTPException, Security, status
 from fastapi.security import APIKeyHeader
+import subprocess
 
 
 app = FastAPI()
@@ -17,12 +18,13 @@ def get_api_key(api_key_header: str = Security(api_key_header)) -> str:
     )
 
 
-@app.get("/protected")
-def protected_route(api_key: str = Security(get_api_key)):
-    # Process the request for authenticated users
-    return {"message": "Access granted!"}
+@app.get("/psaux")
+def psaux(api_key: str = Security(get_api_key)):
+    processes = subprocess.check_output(["ps", "aux"])
+    return {"processes": processes.decode("utf-8")}
 
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)
