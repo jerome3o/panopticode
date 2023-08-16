@@ -1,7 +1,7 @@
 import os
 from fastapi import FastAPI, HTTPException, Security, status
 from fastapi.security import APIKeyHeader
-import subprocess
+import psutil
 
 
 app = FastAPI()
@@ -18,10 +18,20 @@ def get_api_key(api_key_header: str = Security(api_key_header)) -> str:
     )
 
 
-@app.get("/psaux")
+@app.get("/ps")
 def psaux(api_key: str = Security(get_api_key)):
-    processes = subprocess.check_output(["ps", "aux"])
-    return {"processes": processes.decode("utf-8")}
+    # Iterate over all running process
+    procs = []
+    for proc in psutil.process_iter(["pid", "name", "username"]):
+        info = proc.info
+        procs.append(
+            {
+                "pid": info["pid"],
+                "name": info["name"],
+                "username": info["username"],
+            }
+        )
+    return procs
 
 
 if __name__ == "__main__":
