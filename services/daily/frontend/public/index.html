@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daily Self Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+</head>
+<body>
+    <div id="app">
+        <h2>Daily Self Report</h2>
+        <form @submit.prevent="submit">
+            <label for="happiness">Happiness</label>
+            <input type="range" id="happiness" v-model="report.happiness" min="1" max="10" required />
+
+            <label for="tiredness">Tiredness</label>
+            <input type="range" id="tiredness" v-model="report.tiredness" min="1" max="10" required />
+
+            <label for="notable_events">Notable events</label>
+            <textarea id="notable_events" v-model="report.notable_events" required></textarea>
+
+            <label for="notes">Notes</label>
+            <textarea id="notes" v-model="report.notes" required></textarea>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                report: {
+                    happiness: 5,
+                    tiredness: 5,
+                    notable_events: "",
+                    notes: ""
+                }
+            },
+            methods: {
+                submit: async function(event) {
+                    if (!event.target.checkValidity()) return;
+                    try {
+                        const response = await fetch('your-api-url', { method: 'POST', body: JSON.stringify(this.report) });
+                        const data = await response.json();
+                        console.log(data);
+                    } catch(error) {
+                        console.log(error);
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
