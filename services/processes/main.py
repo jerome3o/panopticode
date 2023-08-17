@@ -5,7 +5,7 @@ import psutil
 
 
 app = FastAPI()
-api_keys = set(os.environ.get("API_KEYS", "").split(","))
+api_keys = set(os.environ.get("PANOPTICODE_API_KEYS", "").split(","))
 api_key_header = APIKeyHeader(name="X-API-Key")
 
 

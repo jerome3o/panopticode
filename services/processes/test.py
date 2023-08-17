@@ -1,7 +1,7 @@
 import os
 from requests import get
 
-_key = os.environ["API_KEYS"].split(",")[0]
+_key = os.environ["PANOPTICODE_API_KEYS"].split(",")[0]
 
 
 def main():
