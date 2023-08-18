@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 
 from fastapi import FastAPI
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -10,12 +11,14 @@ app = FastAPI()
 
 # TODO(j.swannack): api keys
 
+_MONGODB_CONNECTION_STRING = os.environ.get('MONGODB_CONNECTION_STRING')
+_MONGODB_DATABASE_NAME = os.environ.get('MONGODB_DATABASE_NAME')
 
 # todo dependency inject db client
 @app.on_event("startup")
 async def startup_db_client():
-    app.mongodb_client = AsyncIOMotorClient('<your-mongodb-connection-string>')
-    app.mongodb = app.mongodb_client['<your-database-name>']
+    app.mongodb_client = AsyncIOMotorClient(_MONGODB_CONNECTION_STRING)
+    app.mongodb = app.mongodb_client[_MONGODB_DATABASE_NAME]
 
 
 @app.on_event("shutdown")
