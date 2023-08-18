@@ -1,7 +1,7 @@
-from datetime import datetime
+from datetime import datetime, time
 import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from server.models import DailySelfReportStorage, DailySelfReportTransfer
@@ -12,13 +12,13 @@ app = FastAPI()
 # TODO(j.swannack): api keys
 
 _MONGODB_CONNECTION_STRING = os.environ.get('MONGODB_CONNECTION_STRING')
-_MONGODB_DATABASE_NAME = os.environ.get('MONGODB_DATABASE_NAME')
+_MONGODB_DATABASE = os.environ.get('MONGODB_DATABASE')
 
 # todo dependency inject db client
 @app.on_event("startup")
 async def startup_db_client():
     app.mongodb_client = AsyncIOMotorClient(_MONGODB_CONNECTION_STRING)
-    app.mongodb = app.mongodb_client[_MONGODB_DATABASE_NAME]
+    app.mongodb = app.mongodb_client[_MONGODB_DATABASE]
 
 
 @app.on_event("shutdown")
@@ -38,10 +38,10 @@ async def create_record(record: DailySelfReportTransfer):
 # Endpoint to check if there has been a report today
 @app.get("/records/today/", response_model=DailySelfReportStorage)
 async def get_today_record():
-    today = datetime.now().date()
+    today = datetime.combine(datetime.now().date(), time())
     result = await app.mongodb['daily_self_report'].find_one({'created_timestamp': {'$gte': today}})
     if result:
         return DailySelfReportStorage.model_validate(result)
     else:
-        # 404
-        return None
+        # raise 404
+        raise HTTPException(status_code=404, detail="Record not found")
