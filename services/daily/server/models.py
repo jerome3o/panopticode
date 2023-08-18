@@ -14,9 +14,9 @@ class DailySelfReport(BaseModel):
 # Data Transfer Object
 class DailySelfReportTransfer(BaseModel):
     report: DailySelfReport
-    created_timestamp: datetime
 
 # Data Storage Object
 class DailySelfReportStorage(DailySelfReportTransfer):
     id: Optional[str]
     modified_timestamp: Optional[datetime]
+    created_timestamp: Optional[datetime]
