@@ -40,6 +40,7 @@ async def shutdown_db_client():
 async def create_record(record: DailySelfReportTransfer):
     storage_record = DailySelfReportStorage.model_validate(record.model_dump())
     storage_record.modified_timestamp = datetime.now()
+    storage_record.created_timestamp = datetime.now()
     result = await app.mongodb['daily_self_report'].insert_one(storage_record.model_dump())
     storage_record.id = str(result.inserted_id)
     return storage_record
