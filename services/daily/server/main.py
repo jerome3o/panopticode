@@ -5,7 +5,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from server.models import DailySelfReportStorage, DailySelfReportTransfer
+from models import DailySelfReportStorage, DailySelfReportTransfer
 
 
 app = FastAPI()
