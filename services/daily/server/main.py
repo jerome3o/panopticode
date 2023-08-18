@@ -2,12 +2,22 @@ from datetime import datetime, time
 import os
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from server.models import DailySelfReportStorage, DailySelfReportTransfer
 
 
 app = FastAPI()
+
+# allow CORS
+# todo: tighten this up
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # TODO(j.swannack): api keys
 
@@ -26,7 +36,7 @@ async def shutdown_db_client():
     app.mongodb_client.close()
 
 
-@app.post("/records/", response_model=DailySelfReportStorage)
+@app.post("/reports/", response_model=DailySelfReportStorage)
 async def create_record(record: DailySelfReportTransfer):
     storage_record = DailySelfReportStorage.model_validate(record.model_dump())
     storage_record.modified_timestamp = datetime.now()
@@ -36,7 +46,7 @@ async def create_record(record: DailySelfReportTransfer):
 
 
 # Endpoint to check if there has been a report today
-@app.get("/records/today/", response_model=DailySelfReportStorage)
+@app.get("/reports/today/", response_model=DailySelfReportStorage)
 async def get_today_record():
     today = datetime.combine(datetime.now().date(), time())
     result = await app.mongodb['daily_self_report'].find_one({'created_timestamp': {'$gte': today}})
