@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     let url = "http://localhost:8000/"
     // http://daily-be.k8s.jeromeswannack.com/
     // ensure url has trailing slash
@@ -11,7 +11,7 @@
         notes: ""
     };
 
-    async function submit(event) {
+    async function submit(event: any) {
         event.preventDefault();
         if (!event.target.checkValidity()) return;
         try {
