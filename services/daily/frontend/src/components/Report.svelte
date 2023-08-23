@@ -75,7 +75,7 @@ label {
     margin-top: 20px;
     font-weight: bold;
 }
-textarea, input, button {
+textarea, button {
     margin-top: 5px;
 }
 /* make the text area fill it's available space */
