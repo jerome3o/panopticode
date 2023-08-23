@@ -47,7 +47,7 @@ async def create_record(record: DailySelfReportTransfer):
     return record
 
 
-@app.get("/reports/today/", response_model=DailySelfReportStorage)
+@app.get("/reports/today/", response_model=TodayResponse)
 async def get_today_record():
     today = datetime.combine(datetime.now().date(), time())
 
@@ -61,7 +61,7 @@ async def get_today_record():
     )
 
     if report:
-        return TodayResponse(report=report)
+        return TodayResponse(report=report.dict())
 
     return TODAY_MISSING_RESPONSE
 
