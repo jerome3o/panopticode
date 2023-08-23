@@ -21,8 +21,9 @@ app.add_middleware(
 
 # TODO(j.swannack): api keys
 
-_MONGODB_CONNECTION_STRING = os.environ.get('MONGODB_CONNECTION_STRING')
-_MONGODB_DATABASE = os.environ.get('MONGODB_DATABASE')
+_MONGODB_CONNECTION_STRING = os.environ.get("MONGODB_CONNECTION_STRING")
+_MONGODB_DATABASE = os.environ.get("MONGODB_DATABASE")
+
 
 # todo dependency inject db client
 @app.on_event("startup")
@@ -41,7 +42,9 @@ async def create_record(record: DailySelfReportTransfer):
     storage_record = DailySelfReportStorage.model_validate(record.model_dump())
     storage_record.modified_timestamp = datetime.now()
     storage_record.created_timestamp = datetime.now()
-    result = await app.mongodb['daily_self_report'].insert_one(storage_record.model_dump())
+    result = await app.mongodb["daily_self_report"].insert_one(
+        storage_record.model_dump()
+    )
     storage_record.id = str(result.inserted_id)
     return storage_record
 
@@ -50,7 +53,9 @@ async def create_record(record: DailySelfReportTransfer):
 @app.get("/reports/today/", response_model=DailySelfReportStorage)
 async def get_today_record():
     today = datetime.combine(datetime.now().date(), time())
-    result = await app.mongodb['daily_self_report'].find_one({'created_timestamp': {'$gte': today}})
+    result = await app.mongodb["daily_self_report"].find_one(
+        {"created_timestamp": {"$gte": today}}
+    )
     if result:
         return DailySelfReportStorage.model_validate(result)
     else:
