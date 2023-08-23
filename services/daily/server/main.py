@@ -54,6 +54,19 @@ async def create_record(record: DailySelfReportTransfer):
     return storage_record
 
 
+@app.post("/reports/{id}/", response_model=DailySelfReportStorage)
+async def update_record(id: str, record: DailySelfReportTransfer):
+    storage_record = DailySelfReportStorage.model_validate(record.model_dump())
+    storage_record.modified_timestamp = datetime.now()
+    result = await app.mongodb["daily_self_report"].update_one(
+        {"_id": id}, {"$set": storage_record.model_dump()}
+    )
+    if result.modified_count:
+        storage_record.id = id
+        return storage_record
+    return None
+
+
 # Endpoint to check if there has been a report today
 @app.get("/reports/today/", response_model=DailySelfReportStorage)
 async def get_today_record():
