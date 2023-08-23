@@ -1,11 +1,16 @@
 from datetime import datetime, time
 import os
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from models import DailySelfReportStorage, DailySelfReportTransfer
+from models import (
+    DailySelfReportStorage,
+    DailySelfReportTransfer,
+    TodayResponse,
+    TODAY_MISSING_RESPONSE,
+)
 
 
 app = FastAPI()
@@ -57,7 +62,5 @@ async def get_today_record():
         {"created_timestamp": {"$gte": today}}
     )
     if result:
-        return DailySelfReportStorage.model_validate(result)
-    else:
-        # raise 404
-        raise HTTPException(status_code=404, detail="Record not found")
+        return TodayResponse(report=result)
+    return TODAY_MISSING_RESPONSE

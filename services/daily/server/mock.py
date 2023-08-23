@@ -1,10 +1,15 @@
 from datetime import datetime, time
 import logging
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from models import DailySelfReportStorage, DailySelfReportTransfer
+from models import (
+    DailySelfReportStorage,
+    DailySelfReportTransfer,
+    TodayResponse,
+    TODAY_MISSING_RESPONSE,
+)
 
 app = FastAPI()
 
@@ -36,7 +41,10 @@ def _make_fake_storage_object(
 @app.post("/reports/", response_model=DailySelfReportStorage)
 async def create_record(record: DailySelfReportTransfer):
     # just return predefined data regardless of input
-    return _make_fake_storage_object(record)
+
+    record = _make_fake_storage_object(record)
+    data[record.id] = record
+    return record
 
 
 @app.get("/reports/today/", response_model=DailySelfReportStorage)
@@ -53,9 +61,9 @@ async def get_today_record():
     )
 
     if report:
-        return report
+        return TodayResponse(report=report)
 
-    raise HTTPException(status_code=404, detail="Record not found")
+    return TODAY_MISSING_RESPONSE
 
 
 if __name__ == "__main__":
