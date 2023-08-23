@@ -12,6 +12,13 @@
     };
 
     let id: string;
+    let buttonText: string;
+    let buttonClass: string;
+
+    let uploading: boolean = false;
+
+    $: buttonText = id ? "Update" : "Submit";
+    $: buttonClass = id ? "update" : "new";
 
     let promise = fetch(`${url}reports/today/`)
         .then(response => response.json())
@@ -25,11 +32,16 @@
     async function submit(event: any) {
         event.preventDefault();
         if (!event.target.checkValidity()) return;
+
+        uploading = true;
         if (id) {
             await submitUpdate();
         } else {
             await submitNew();
         }
+        // just so it feels like something happened lol
+        await new Promise(resolve => setTimeout(resolve, 200));
+        uploading = false;
     }
 
     async function submitUpdate() {
@@ -88,9 +100,15 @@
             {/if}
             <form on:submit={submit}>
                 <ReportInput bind:report={report} />
-                <button type="submit" class="{id ? 'update' : 'new'}">
-                    {id ? "Update" : "Submit"}
-                </button>
+                {#if uploading}
+                    <button type="submit" class="loading">
+                        loading
+                    </button>
+                {:else}
+                    <button type="submit" class="{buttonClass}">
+                        {buttonText}
+                    </button>
+                {/if}
             </form>
         {:catch error}
             <p style="color: red">Something terrible has happened???? {error}</p>
@@ -105,6 +123,10 @@
 }
 .update {
     background-color: blue;
+}
+.loading {
+    background-color: grey;
+    color: black;
 }
 
 
