@@ -1,7 +1,5 @@
 <script lang="ts">
-    let url = "http://localhost:8000/"
-    // http://daily-be.k8s.jeromeswannack.com/
-    // ensure url has trailing slash
+    let url: string = import.meta.env.VITE_BACKEND_URL;
     if (url[url.length - 1] !== '/') url += '/';
 
     let report = {
