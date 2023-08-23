@@ -1,4 +1,6 @@
 <script lang="ts">
+	  import Slider from "./Slider.svelte";
+
     let url: string = import.meta.env.VITE_BACKEND_URL;
     if (url[url.length - 1] !== '/') url += '/';
 
@@ -35,12 +37,8 @@
     <div id="app">
         <h2>Daily Self Report</h2>
         <form on:submit={submit}>
-            <label for="happiness">Happiness</label>
-            <input type="range" id="happiness" bind:value={report.happiness} min="1" max="10" required />
-
-            <label for="tiredness">Tiredness</label>
-            <input type="range" id="tiredness" bind:value={report.tiredness} min="1" max="10" required />
-
+            <Slider title="Happiness" bind:value={report.happiness}/>
+            <Slider title="Tiredness" bind:value={report.tiredness}/>
             <label for="notable_events">Notable events</label>
             <textarea id="notable_events" bind:value={report.notable_events} required ></textarea>
 
