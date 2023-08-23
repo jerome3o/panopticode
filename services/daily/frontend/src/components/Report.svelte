@@ -11,20 +11,48 @@
         notes: ""
     };
 
-    let alreadySubmitted = false;
+    let id: string;
 
     let promise = fetch(`${url}reports/today/`)
         .then(response => response.json())
         .then(data => {
             if (data.value) {
                 report = data.value.report;
-                alreadySubmitted = true;
+                id = data.value.id;
             }
         });
 
     async function submit(event: any) {
         event.preventDefault();
         if (!event.target.checkValidity()) return;
+        if (id) {
+            await submitUpdate();
+        } else {
+            await submitNew();
+        }
+    }
+
+    async function submitUpdate() {
+        try {
+            console.log(report);
+            const response = await fetch(`${url}reports/${id}/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    report: report
+                })
+            });
+            const data = await response.json();
+            id = data.id;
+            console.log(data);
+        } catch(error) {
+            console.log(error);
+        }
+    }
+
+    async function submitNew() {
         try {
             console.log(report);
             const response = await fetch(`${url}reports/`, {
@@ -37,7 +65,7 @@
                 })
             });
             const data = await response.json();
-            alreadySubmitted = true;
+            id = data.id;
             console.log(data);
         } catch(error) {
             console.log(error);
@@ -53,15 +81,15 @@
         {#await promise}
             <p>...waiting</p>
         {:then v}
-            {#if alreadySubmitted}
+            {#if id}
                 <p>Already submitted today</p>
             {:else}
                 <p>Not submitted today</p>
             {/if}
             <form on:submit={submit}>
                 <ReportInput bind:report={report} />
-                <button type="submit" class="{alreadySubmitted ? 'update' : 'new'}">
-                    {alreadySubmitted ? "Update" : "Submit"}
+                <button type="submit" class="{id ? 'update' : 'new'}">
+                    {id ? "Update" : "Submit"}
                 </button>
             </form>
         {:catch error}
