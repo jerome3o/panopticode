@@ -1,5 +1,5 @@
 <script lang="ts">
-    export let value: number = 5;
+    export let value: number;
     export let title: string = "Slider Value";
     export let min: number = 1;
     export let max: number = 10;
