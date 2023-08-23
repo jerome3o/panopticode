@@ -25,8 +25,8 @@ class DailySelfReportStorage(DailySelfReportTransfer):
 
 
 class TodayResponse(BaseModel):
-    report: Optional[DailySelfReportStorage]
-    error: Optional[str]
+    report: Optional[DailySelfReportStorage] = None
+    error: Optional[str] = None
 
 
 TODAY_MISSING_RESPONSE = TodayResponse(error="Report not found")
