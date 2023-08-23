@@ -47,6 +47,15 @@ async def create_record(record: DailySelfReportTransfer):
     return record
 
 
+@app.post("/reports/{id}/", response_model=DailySelfReportStorage)
+async def update_record(id: str, record: DailySelfReportTransfer):
+    # just return predefined data regardless of input
+
+    record = _make_fake_storage_object(record)
+    data[record.id] = record
+    return record
+
+
 @app.get("/reports/today/", response_model=TodayResponse)
 async def get_today_record():
     today = datetime.combine(datetime.now().date(), time())
