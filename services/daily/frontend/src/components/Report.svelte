@@ -11,11 +11,14 @@
         notes: ""
     };
 
+    let alreadySubmitted = false;
+
     let promise = fetch(`${url}reports/today/`)
         .then(response => response.json())
         .then(data => {
             if (data.value) {
                 report = data.value.report;
+                alreadySubmitted = true;
             }
         });
 
@@ -34,6 +37,7 @@
                 })
             });
             const data = await response.json();
+            alreadySubmitted = true;
             console.log(data);
         } catch(error) {
             console.log(error);
@@ -49,9 +53,16 @@
         {#await promise}
             <p>...waiting</p>
         {:then v}
+            {#if alreadySubmitted}
+                <p>Already submitted today</p>
+            {:else}
+                <p>Not submitted today</p>
+            {/if}
             <form on:submit={submit}>
                 <ReportInput bind:report={report} />
-                <button type="submit">Submit</button>
+                <button type="submit" class="{alreadySubmitted ? 'update' : 'new'}">
+                    {alreadySubmitted ? "Update" : "Submit"}
+                </button>
             </form>
         {:catch error}
             <p style="color: red">Something terrible has happened???? {error}</p>
@@ -61,6 +72,14 @@
 </main>
 
 <style>
+.new {
+    background-color: green;
+}
+.update {
+    background-color: blue;
+}
+
+
 :global(main) {
     display: flex;
     justify-content: center;
