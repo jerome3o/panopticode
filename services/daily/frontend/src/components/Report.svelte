@@ -1,5 +1,6 @@
 <script lang="ts">
 	  import Slider from "./Slider.svelte";
+	import TextInput from "./TextInput.svelte";
 
     let url: string = import.meta.env.VITE_BACKEND_URL;
     if (url[url.length - 1] !== '/') url += '/';
@@ -39,12 +40,8 @@
         <form on:submit={submit}>
             <Slider title="Happiness" bind:value={report.happiness}/>
             <Slider title="Tiredness" bind:value={report.tiredness}/>
-            <label for="notable_events">Notable events</label>
-            <textarea id="notable_events" bind:value={report.notable_events} required ></textarea>
-
-            <label for="notes">Notes</label>
-            <textarea id="notes" bind:value={report.notes} required></textarea>
-
+            <TextInput title="Notable Events" bind:value={report.notable_events} />
+            <TextInput title="Notes" bind:value={report.notes}/>
             <button type="submit">Submit</button>
         </form>
     </div>
@@ -71,23 +68,25 @@ form {
     width: 100%;
     margin: 0 auto;
 }
-label {
+
+
+/* todo: move these somewhere more central */
+:global(label) {
     margin-top: 20px;
     font-weight: bold;
 }
-textarea, button {
+:global(textarea, input, button) {
     margin-top: 5px;
 }
 /* make the text area fill it's available space */
 /* prevent it from growing horizontally */
-textarea {
+:global(textarea) {
     flex-grow: 1;
     width: 100%;
     resize: vertical;
     height: 200px;
 }
-
-button {
+:global(button) {
     padding: 10px;
     background-color: #6c757d;
     color: #fff;
