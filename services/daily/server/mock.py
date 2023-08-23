@@ -47,7 +47,7 @@ async def create_record(record: DailySelfReportTransfer):
     return record
 
 
-@app.post("/reports/{id}/", response_model=DailySelfReportStorage)
+@app.put("/reports/{id}/", response_model=DailySelfReportStorage)
 async def update_record(id: str, record: DailySelfReportTransfer):
     # just return predefined data regardless of input
 

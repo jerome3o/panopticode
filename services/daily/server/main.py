@@ -54,7 +54,7 @@ async def create_record(record: DailySelfReportTransfer):
     return storage_record
 
 
-@app.post("/reports/{id}/", response_model=DailySelfReportStorage)
+@app.put("/reports/{id}/", response_model=DailySelfReportStorage)
 async def update_record(id: str, record: DailySelfReportTransfer):
     storage_record = DailySelfReportStorage.model_validate(record.model_dump())
     storage_record.modified_timestamp = datetime.now()
