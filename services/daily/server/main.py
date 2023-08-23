@@ -62,5 +62,5 @@ async def get_today_record():
         {"created_timestamp": {"$gte": today}}
     )
     if result:
-        return TodayResponse(report=result)
+        return TodayResponse(value=result)
     return TODAY_MISSING_RESPONSE

@@ -25,7 +25,7 @@ class DailySelfReportStorage(DailySelfReportTransfer):
 
 
 class TodayResponse(BaseModel):
-    report: Optional[DailySelfReportStorage] = None
+    value: Optional[DailySelfReportStorage] = None
     error: Optional[str] = None
 
 

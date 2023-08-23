@@ -61,7 +61,7 @@ async def get_today_record():
     )
 
     if report:
-        return TodayResponse(report=report.dict())
+        return TodayResponse(value=report.dict())
 
     return TODAY_MISSING_RESPONSE
 
