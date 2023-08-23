@@ -1,6 +1,5 @@
 <script lang="ts">
-	  import Slider from "./Slider.svelte";
-	import TextInput from "./TextInput.svelte";
+	import ReportInput from "./report/ReportInput.svelte";
 
     let url: string = import.meta.env.VITE_BACKEND_URL;
     if (url[url.length - 1] !== '/') url += '/';
@@ -38,17 +37,14 @@
     <div id="app">
         <h2>Daily Self Report</h2>
         <form on:submit={submit}>
-            <Slider title="Happiness" bind:value={report.happiness}/>
-            <Slider title="Tiredness" bind:value={report.tiredness}/>
-            <TextInput title="Notable Events" bind:value={report.notable_events} />
-            <TextInput title="Notes" bind:value={report.notes}/>
+            <ReportInput bind:report={report} />
             <button type="submit">Submit</button>
         </form>
     </div>
 </main>
 
 <style>
-main {
+:global(main) {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -57,20 +53,17 @@ main {
     background-color: #f8f9fa;
     font-family: 'Arial', sans-serif;
 }
-#app {
+:global(#app) {
     width: 70%;
     height: 70%;
 }
-form {
+:global(form) {
     display: flex;
     flex-direction: column;
     min-width: 100%;
     width: 100%;
     margin: 0 auto;
 }
-
-
-/* todo: move these somewhere more central */
 :global(label) {
     margin-top: 20px;
     font-weight: bold;
@@ -94,5 +87,4 @@ form {
     cursor: pointer;
     margin-top: 20px;
 }
-
 </style>
