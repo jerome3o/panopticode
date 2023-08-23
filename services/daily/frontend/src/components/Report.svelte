@@ -11,6 +11,14 @@
         notes: ""
     };
 
+    let promise = fetch(`${url}reports/today/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.value) {
+                report = data.value.report;
+            }
+        });
+
     async function submit(event: any) {
         event.preventDefault();
         if (!event.target.checkValidity()) return;
@@ -35,11 +43,20 @@
 
 <main>
     <div id="app">
+
         <h2>Daily Self Report</h2>
-        <form on:submit={submit}>
-            <ReportInput bind:report={report} />
-            <button type="submit">Submit</button>
-        </form>
+
+        {#await promise}
+            <p>...waiting</p>
+        {:then v}
+            <form on:submit={submit}>
+                <ReportInput bind:report={report} />
+                <button type="submit">Submit</button>
+            </form>
+        {:catch error}
+            <p style="color: red">Something terrible has happened???? {error}</p>
+        {/await}
+
     </div>
 </main>
 
