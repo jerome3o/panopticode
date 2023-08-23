@@ -66,6 +66,12 @@ async def get_today_record():
     return TODAY_MISSING_RESPONSE
 
 
+@app.get("/reports/clear/")
+async def clear_records():
+    data.clear()
+    return "ok"
+
+
 if __name__ == "__main__":
     import uvicorn
 
