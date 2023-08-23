@@ -54,8 +54,8 @@
     font-family: 'Arial', sans-serif;
 }
 :global(#app) {
-    width: 70%;
-    height: 70%;
+    width: 90%;
+    height: 90%;
 }
 :global(form) {
     display: flex;
