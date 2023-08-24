@@ -4,6 +4,7 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
+from bson import ObjectId
 
 from models import (
     DailySelfReportStorage,
@@ -58,9 +59,11 @@ async def create_record(record: DailySelfReportTransfer):
 async def update_record(id: str, record: DailySelfReportTransfer):
     storage_record = DailySelfReportStorage.model_validate(record.model_dump())
     storage_record.modified_timestamp = datetime.now()
+
     result = await app.mongodb["daily_self_report"].update_one(
-        {"_id": id}, {"$set": storage_record.model_dump()}
+        {"_id": ObjectId(id)}, {"$set": storage_record.model_dump()}
     )
+
     if result.modified_count:
         storage_record.id = id
         return storage_record
@@ -77,3 +80,12 @@ async def get_today_record():
     if result:
         return TodayResponse(value=result)
     return TODAY_MISSING_RESPONSE
+
+
+if __name__ == "__main__":
+    import logging
+    import uvicorn
+
+    logging.basicConfig(level=logging.INFO)
+
+    uvicorn.run(app, host="0.0.0.0", port=8000)
