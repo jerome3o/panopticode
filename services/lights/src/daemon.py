@@ -1,25 +1,33 @@
 import os
 import asyncio
+import logging
+import httpx
 
 from yeelight import Bulb
 
 _BULB_IP = os.environ.get("BULB_IP")
 _REPORT_URL = os.environ.get("REPORT_URL")
 
+_logger = logging.getLogger(__name__)
+
+
+async def has_reported_today():
+    async with httpx.AsyncClient() as client:
+        response = await client.get(_REPORT_URL)
+
+    return response.json().get("value") is not None
+
 
 async def daemon():
     bulb = Bulb(_BULB_IP)
-    on = False
     while True:
-        on = not on
+        _logger.info("Checking if reported today")
+        reported_today = await has_reported_today()
+        _logger.info(f"Reported today: {reported_today}")
 
-        if on:
+        if not reported_today:
             bulb.turn_on()
         else:
             bulb.turn_off()
 
-        # # The daemon task will make an HTTP request every 10 seconds
-        # async with httpx.AsyncClient() as client:
-        #     response = await client.get(_REPORT_URL)
-        # print(response.json())
         await asyncio.sleep(5)

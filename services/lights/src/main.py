@@ -1,13 +1,12 @@
 import asyncio
-import os
 import logging
 
-import httpx
 from fastapi import FastAPI
 from pydantic import BaseModel
 from daemon import daemon
 
 _logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 
 class Status(BaseModel):
@@ -19,7 +18,6 @@ app = FastAPI()
 
 @app.on_event("startup")
 async def startup_event():
-    print("hey")
     # This function will run the daemon task in the background when the server starts
     app.state.http_daemon_task = asyncio.create_task(_try_daemon())
 
