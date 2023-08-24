@@ -5,7 +5,7 @@
     export let report = {
         happiness: 50,
         tiredness: 50,
-        notable_events: "",
+        stress: 50,
         notes: ""
     };
 
@@ -15,5 +15,5 @@
 
 <Slider title="Happiness" bind:value={report.happiness} {min} {max}/>
 <Slider title="Tiredness" bind:value={report.tiredness} {min} {max}/>
-<TextInput title="Notable Events" bind:value={report.notable_events} />
+<Slider title="Stress" bind:value={report.stress} {min} {max}/>
 <TextInput title="Notes" bind:value={report.notes}/>

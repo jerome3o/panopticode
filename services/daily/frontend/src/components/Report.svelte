@@ -5,9 +5,9 @@
     if (url[url.length - 1] !== '/') url += '/';
 
     let report = {
-        happiness: 5,
-        tiredness: 5,
-        notable_events: "",
+        happiness: 50,
+        tiredness: 50,
+        stress: 50,
         notes: ""
     };
 

@@ -18,8 +18,8 @@ BsonId = Annotated[Optional[str], BeforeValidator(bson_id_to_str)]
 class DailySelfReport(BaseModel):
     happiness: int
     tiredness: int
+    stress: int
 
-    notable_events: str
     notes: str
 
 
