@@ -25,7 +25,7 @@
         .then(data => {
             if (data.value) {
                 report = data.value.report;
-                id = data.value.id;
+                id = data.value._id;
             }
         });
 
@@ -57,7 +57,7 @@
                 })
             });
             const data = await response.json();
-            id = data.id;
+            id = data._id;
             console.log(data);
         } catch(error) {
             console.log(error);
@@ -77,7 +77,7 @@
                 })
             });
             const data = await response.json();
-            id = data.id;
+            id = data._id;
             console.log(data);
         } catch(error) {
             console.log(error);
