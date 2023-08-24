@@ -61,7 +61,13 @@ async def update_record(id: str, record: DailySelfReportTransfer):
     storage_record.modified_timestamp = datetime.now()
 
     result = await app.mongodb["daily_self_report"].update_one(
-        {"_id": ObjectId(id)}, {"$set": storage_record.model_dump()}
+        {"_id": ObjectId(id)},
+        {
+            "$set": storage_record.model_dump(
+                exclude_none=True,
+                exclude_unset=True,
+            )
+        },
     )
 
     if result.modified_count:
