@@ -1,9 +1,14 @@
 import asyncio
+import os
+
 import httpx
 from fastapi import FastAPI
 from pydantic import BaseModel
+from yeelight import Bulb
 
-_REPORT_URL = "http://daily-be.k8s.jeromeswannack.com/reports/today/"
+
+_REPORT_URL = os.environ.get("REPORT_URL")
+_BULB_IP = os.environ.get("BULB_IP")
 
 
 class Status(BaseModel):
@@ -27,13 +32,23 @@ async def shutdown_event():
 
 
 async def http_daemon():
-    print("hello")
+    bulb = Bulb(_BULB_IP)
+    on = False
     while True:
-        # The daemon task will make an HTTP request every 10 seconds
-        async with httpx.AsyncClient() as client:
-            response = await client.get(_REPORT_URL)
-        print(response.json())
-        await asyncio.sleep(10)
+        on = not on
+
+        print(on)
+
+        if on:
+            bulb.turn_on()
+        else:
+            bulb.turn_off()
+
+        # # The daemon task will make an HTTP request every 10 seconds
+        # async with httpx.AsyncClient() as client:
+        #     response = await client.get(_REPORT_URL)
+        # print(response.json())
+        await asyncio.sleep(5)
 
 
 @app.get("/status", response_model=Status)
