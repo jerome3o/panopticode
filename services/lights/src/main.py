@@ -1,14 +1,13 @@
 import asyncio
 import os
+import logging
 
 import httpx
 from fastapi import FastAPI
 from pydantic import BaseModel
-from yeelight import Bulb
+from daemon import daemon
 
-
-_REPORT_URL = os.environ.get("REPORT_URL")
-_BULB_IP = os.environ.get("BULB_IP")
+_logger = logging.getLogger(__name__)
 
 
 class Status(BaseModel):
@@ -22,7 +21,7 @@ app = FastAPI()
 async def startup_event():
     print("hey")
     # This function will run the daemon task in the background when the server starts
-    app.state.http_daemon_task = asyncio.create_task(http_daemon())
+    app.state.http_daemon_task = asyncio.create_task(_try_daemon())
 
 
 @app.on_event("shutdown")
@@ -31,24 +30,12 @@ async def shutdown_event():
     app.state.http_daemon_task.cancel()
 
 
-async def http_daemon():
-    bulb = Bulb(_BULB_IP)
-    on = False
+async def _try_daemon():
     while True:
-        on = not on
-
-        print(on)
-
-        if on:
-            bulb.turn_on()
-        else:
-            bulb.turn_off()
-
-        # # The daemon task will make an HTTP request every 10 seconds
-        # async with httpx.AsyncClient() as client:
-        #     response = await client.get(_REPORT_URL)
-        # print(response.json())
-        await asyncio.sleep(5)
+        try:
+            await daemon()
+        except Exception:
+            _logger.exception("Error in http daemon")
 
 
 @app.get("/status", response_model=Status)
