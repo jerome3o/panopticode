@@ -2,6 +2,7 @@ import os
 import asyncio
 import logging
 import httpx
+import datetime
 
 from yeelight import Bulb
 
@@ -9,6 +10,10 @@ _BULB_IP = os.environ.get("BULB_IP")
 _REPORT_URL = os.environ.get("REPORT_URL")
 
 _logger = logging.getLogger(__name__)
+
+
+def _is_evening():
+    return datetime.datetime.now().hour >= 18
 
 
 async def has_reported_today():
@@ -25,7 +30,7 @@ async def daemon():
         reported_today = await has_reported_today()
         _logger.info(f"Reported today: {reported_today}")
 
-        if not reported_today:
+        if not reported_today and _is_evening():
             bulb.turn_on()
         else:
             bulb.turn_off()
