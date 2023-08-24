@@ -68,7 +68,7 @@ async def update_record(id: str, record: DailySelfReportTransfer):
 
 
 # Endpoint to check if there has been a report today
-@app.get("/reports/today/", response_model=DailySelfReportStorage)
+@app.get("/reports/today/", response_model=TodayResponse)
 async def get_today_record():
     today = datetime.combine(datetime.now().date(), time())
     result = await app.mongodb["daily_self_report"].find_one(
