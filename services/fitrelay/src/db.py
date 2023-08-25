@@ -51,7 +51,6 @@ def insert_token_to_db(token: TokenInfo):
         created=token.created,
     )
     conn.execute(insert_op)
-    conn.commit()
     conn.close()
 
 
