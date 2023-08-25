@@ -47,7 +47,7 @@ def insert_token_to_db(token: TokenInfo):
     insert_op = tokens.insert().values(
         user_id=token.user_id,
         user_profile=token.user_profile,
-        token_response=token.token_response.model_dump(),
+        token_response=token.token_response.dict(),
         created=token.created,
     )
     conn.execute(insert_op)
