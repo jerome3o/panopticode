@@ -159,7 +159,7 @@ def refresh_token(token: TokenInfo) -> TokenInfo:
         timeout=5,
     )
 
-    token.token_response = TokenResponse.model_validate(token_response.json())
+    token.token_response = TokenResponse.parse_obj(token_response.json())
     token.created = int(time.time())
 
     insert_token_to_db(token)
