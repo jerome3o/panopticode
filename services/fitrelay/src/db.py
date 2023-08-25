@@ -20,13 +20,9 @@ meta = MetaData()
 tokens = Table(
     "Tokens",
     meta,
-    # Column("user_id", String),
-    # user_id should be the primary key
     Column("user_id", String, primary_key=True),
-    # user profile data
     Column("user_profile", JSON),
     Column("token_response", JSON),
-    # created unix timestamp
     Column("created", Integer),
 )
 
@@ -69,3 +65,20 @@ def get_token_from_db(token_id: int) -> TokenInfo:
         token_response=values["token_response"],
         created=values["created"],
     )
+
+
+def get_all_tokens_from_db() -> list[TokenInfo]:
+    conn = engine.connect()
+    select_query = tokens.select()
+    values = conn.execute(select_query).fetchall()
+    conn.close()
+
+    return [
+        TokenInfo(
+            user_id=value[0],
+            user_profile=value[1],
+            token_response=value[2],
+            created=value[3],
+        )
+        for value in values
+    ]

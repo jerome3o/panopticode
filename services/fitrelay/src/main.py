@@ -1,12 +1,30 @@
-from fastapi import FastAPI
+import os
+from typing import List
+
+from fastapi import FastAPI, HTTPException, Security, status
+from fastapi.security import APIKeyHeader
 from starlette.middleware.sessions import SessionMiddleware
 
 from auth import router as auth_router
 from constants import SESSION_MIDDLEWARE_SECRET
-from db import create_db_if_needed
+from db import create_db_if_needed, get_all_tokens_from_db
+from models import TokenInfo
 
 
 app = FastAPI()
+
+api_keys = set(os.environ.get("PANOPTICODE_API_KEYS", "").split(","))
+api_key_header = APIKeyHeader(name="X-API-Key")
+
+
+def get_api_key(api_key_header: str = Security(api_key_header)) -> str:
+    if api_key_header in api_keys:
+        return api_key_header
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid or missing API Key",
+    )
+
 
 # Install the SessionMiddleware
 app.add_middleware(
@@ -24,12 +42,12 @@ def startup_event():
     create_db_if_needed()
 
 
-# @app.get("/token/{token_id}")
-# def read_token(token_id):
-#     token = get_token(token_id)
-#     if token is None:
-#         raise HTTPException(status_code=404, detail="Token not found")
-#     return token
+@app.get("/token/", response_model=List[TokenInfo])
+def read_token(api_key: str = Security(get_api_key)) -> List[TokenInfo]:
+    token = get_all_tokens_from_db()
+    if token is None:
+        raise HTTPException(status_code=404, detail="Token not found")
+    return token
 
 
 if __name__ == "__main__":
