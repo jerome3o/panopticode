@@ -5,6 +5,7 @@ import secrets
 import hashlib
 import base64
 import json
+import time
 from urllib.parse import quote
 
 from fastapi import APIRouter, Request, Response, HTTPException
@@ -12,7 +13,7 @@ from fastapi.responses import RedirectResponse
 import requests
 
 from db import insert_token_to_db, get_token_from_db
-from models import Token
+from models import TokenInfo
 from constants import (
     AUTH_URL,
     CLIENT_ID,
@@ -112,11 +113,11 @@ def callback(request: Request, code: str, state: str) -> Response:
     )
 
     # Save the token in the database
-    token = Token(
-        access_token=token_response["access_token"],
-        refresh_token=token_response["refresh_token"],
+    token = TokenInfo(
         user_id=token_response["user_id"],
         user_profile=user_profile_response.json(),
+        token_response=token_response,
+        created=int(time.time()),
     )
     insert_token_to_db(token)
 

@@ -12,7 +12,7 @@ from sqlalchemy import (
     inspect,
 )
 
-from models import Token
+from models import TokenInfo
 
 engine = create_engine("sqlite:///users.db", echo=True)
 meta = MetaData()
@@ -23,10 +23,11 @@ tokens = Table(
     # Column("user_id", String),
     # user_id should be the primary key
     Column("user_id", String, primary_key=True),
-    Column("access_token", String),
-    Column("refresh_token", String),
     # user profile data
     Column("user_profile", JSON),
+    Column("token_response", JSON),
+    # created unix timestamp
+    Column("created", Integer),
 )
 
 
@@ -36,31 +37,35 @@ def create_db():
 
 def create_db_if_needed():
     if not inspect(engine).has_table("Tokens"):
-        print("creating db")
         create_db()
 
 
-def insert_token_to_db(token: Token):
+def insert_token_to_db(token: TokenInfo):
     conn = engine.connect()
+
+    # TODO(j.swannack): needs revisiting - update if exists, insert if not
+    # delete all rows with the user_id
+    conn.execute(tokens.delete().where(tokens.c.user_id == token.user_id))
+
     insert_op = tokens.insert().values(
-        access_token=token.access_token,
-        refresh_token=token.refresh_token,
         user_id=token.user_id,
         user_profile=token.user_profile,
+        token_response=token.token_response.model_dump(),
+        created=token.created,
     )
     conn.execute(insert_op)
     conn.commit()
     conn.close()
 
 
-def get_token_from_db(token_id: int) -> Token:
+def get_token_from_db(token_id: int) -> TokenInfo:
     conn = engine.connect()
     select_query = tokens.select().where(tokens.c.id == token_id)
     values = conn.execute(select_query).fetchone()
     conn.close()
-    return Token(
-        access_token=values["access_token"],
-        refresh_token=values["refresh_token"],
+    return TokenInfo(
         user_id=values["user_id"],
         user_profile=values["user_profile"],
+        token_response=values["token_response"],
+        created=values["created"],
     )
