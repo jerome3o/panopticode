@@ -1,18 +1,29 @@
 from fastapi import FastAPI, HTTPException
+from starlette.middleware.sessions import SessionMiddleware
+
 from auth import router as auth_router
-from db import get_token
+from db import get_token_from_db
+from constants import SESSION_MIDDLEWARE_SECRET
+
 
 app = FastAPI()
+
+# Install the SessionMiddleware
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=SESSION_MIDDLEWARE_SECRET,
+)
+
 
 app.include_router(auth_router, tags=["Authentication"])
 
 
-@app.get("/token/{token_id}")
-def read_token(token_id):
-    token = get_token(token_id)
-    if token is None:
-        raise HTTPException(status_code=404, detail="Token not found")
-    return token
+# @app.get("/token/{token_id}")
+# def read_token(token_id):
+#     token = get_token(token_id)
+#     if token is None:
+#         raise HTTPException(status_code=404, detail="Token not found")
+#     return token
 
 
 if __name__ == "__main__":

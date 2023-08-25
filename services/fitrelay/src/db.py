@@ -15,7 +15,7 @@ tokens = Table(
 )
 
 
-def insert_token(access_token: str, refresh_token: str):
+def insert_token_to_db(access_token: str, refresh_token: str):
     conn = engine.connect()
     insert_op = tokens.insert().values(
         access_token=access_token, refresh_token=refresh_token
@@ -23,7 +23,7 @@ def insert_token(access_token: str, refresh_token: str):
     conn.execute(insert_op)
 
 
-def get_token(token_id: int):
+def get_token_from_db(token_id: int):
     conn = engine.connect()
     select_query = tokens.select().where(tokens.c.id == token_id)
     return conn.execute(select_query).fetchone()
