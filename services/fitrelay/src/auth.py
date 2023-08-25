@@ -7,7 +7,7 @@ import base64
 import json
 from urllib.parse import quote
 
-from fastapi import APIRouter, Request, Response
+from fastapi import APIRouter, Request, Response, HTTPException
 from fastapi.responses import RedirectResponse
 import requests
 
@@ -21,7 +21,7 @@ from constants import (
     STATE,
     SCOPES,
     TOKEN_URL,
-    RESOURCE_URL,
+    USER_PROFILE_URL,
 )
 
 router = APIRouter()
@@ -90,30 +90,29 @@ def callback(request: Request, code: str, state: str) -> Response:
         return Response(status_code=400, content="Invalid state value")
 
     # Get the code verifier from the user's session
+    if "code_verifier" not in request.session:
+        return Response(status_code=400, content="Missing code verifier in session")
+
     code_verifier = request.session["code_verifier"]
+    token_response = _get_token(code_verifier, code)
 
-    # get access_token from session if its there, otherwise use get token
-    access_token = request.session.get("access_token")
-    if not access_token:
-        token_response = _get_token(code_verifier, code)
-        access_token = token_response["access_token"]
-        request.session["access_token"] = access_token
+    access_token = token_response["access_token"]
 
-        # if the token has the user_id field, save it as json to the tokens/ folder
-        if "user_id" in token_response:
-            user_id = token_response["user_id"]
-            with open(f"tokens/{user_id}.json", "w") as file:
-                json.dump(token_response, file)
+    # if the token has the user_id field, save it as json to the tokens/ folder
+    if "user_id" not in token_response:
+        raise HTTPException(
+            status_code=400,
+            detail="No user_id field in token response",
+        )
 
-    # Send a request to the protected resource using the access token
-    resource_response = requests.get(
-        RESOURCE_URL,
+    user_profile_response = requests.get(
+        USER_PROFILE_URL.format(user_id=token_response["user_id"]),
         headers={"Authorization": f"Bearer {access_token}"},
         timeout=5,
     )
 
     # Return the response from the protected resource
     return Response(
-        content=json.dumps(resource_response.json(), indent=4),
+        content=json.dumps(user_profile_response.json(), indent=4),
         media_type="application/json",
     )

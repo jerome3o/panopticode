@@ -29,6 +29,8 @@ RESOURCE_URL = (
     "https://api.fitbit.com/1/user/-/activities/heart/date/2022-12-24/1d.json"
 )
 
+USER_PROFILE_URL = "https://api.fitbit.com/1/user/-/profile.json"
+
 
 # Secret value for session
 SESSION_MIDDLEWARE_SECRET = secrets.token_hex(16)
