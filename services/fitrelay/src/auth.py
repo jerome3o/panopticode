@@ -133,12 +133,12 @@ def callback(request: Request, code: str, state: str) -> Response:
     )
 
 
-def refresh_tokens():
+def refresh_tokens(leeway: int = 3600):
     all_tokens = get_all_tokens_from_db()
     for token in all_tokens:
         expire_time = token.created + token.token_response.expires_in
         # one hour leeway
-        if expire_time < int(time.time()) - 60 * 60:
+        if expire_time < int(time.time()) - leeway:
             refresh_token(token)
 
 

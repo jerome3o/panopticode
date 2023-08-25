@@ -3,9 +3,10 @@ from typing import List
 
 from fastapi import FastAPI, HTTPException, Security, status
 from fastapi.security import APIKeyHeader
+from fastapi_utils.tasks import repeat_every
 from starlette.middleware.sessions import SessionMiddleware
 
-from auth import router as auth_router
+from auth import router as auth_router, refresh_tokens
 from constants import SESSION_MIDDLEWARE_SECRET
 from db import create_db_if_needed, get_all_tokens_from_db
 from models import TokenInfo
@@ -34,6 +35,12 @@ app.add_middleware(
 
 
 app.include_router(auth_router, tags=["Authentication"])
+
+
+@app.on_event("startup")
+@repeat_every(seconds=30 * 60)  # 30 minutes
+def refresh_tokens_job() -> None:
+    refresh_tokens()
 
 
 # on app start up create the db if needed
