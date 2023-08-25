@@ -1,8 +1,7 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from starlette.middleware.sessions import SessionMiddleware
 
 from auth import router as auth_router
-from db import get_token_from_db
 from constants import SESSION_MIDDLEWARE_SECRET
 
 
