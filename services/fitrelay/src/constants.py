@@ -7,12 +7,14 @@ import secrets
 # OAUTH_ID
 # OAUTH_SECRET
 # STATE_SECRET
+# SQLITE_DB
 
 URL = os.environ.get("URL", "http://localhost:8000").rstrip("/")
 CLIENT_ID = os.environ.get("OAUTH_ID")
 CLIENT_SECRET = os.environ.get("OAUTH_SECRET")
 # A state value to use for CSRF protection
 STATE = os.environ.get("STATE_SECRET") or secrets.token_hex(16)
+SQLITE_DB = os.environ.get("SQLITE_DB", "sqlite:///users.db")
 
 
 # The authorization URL for Fitbit's OAuth 2.0 authorization server

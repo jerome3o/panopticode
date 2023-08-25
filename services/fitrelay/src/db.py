@@ -13,8 +13,9 @@ from sqlalchemy import (
 )
 
 from models import TokenInfo
+from constants import SQLITE_DB
 
-engine = create_engine("sqlite:///users.db", echo=True)
+engine = create_engine(SQLITE_DB, echo=True)
 meta = MetaData()
 
 tokens = Table(
