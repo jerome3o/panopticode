@@ -12,8 +12,8 @@ from fastapi import APIRouter, Request, Response, HTTPException
 from fastapi.responses import RedirectResponse
 import requests
 
-from db import insert_token_to_db, get_token_from_db
-from models import TokenInfo
+from db import insert_token_to_db, get_all_tokens_from_db
+from models import TokenInfo, TokenResponse
 from constants import (
     AUTH_URL,
     CLIENT_ID,
@@ -28,12 +28,17 @@ from constants import (
 router = APIRouter()
 
 
-def _get_token(code_verifier: str, code: str) -> dict:
-    # Create the authorization code grant request body
+def _get_client_auth_header() -> str:
     auth_token = base64.b64encode(
         f"{CLIENT_ID}:{CLIENT_SECRET}".encode("utf-8")
     ).decode("utf-8")
     auth_header = f"Basic {auth_token}"
+    return {"Authorization": auth_header}
+
+
+def _get_token(code_verifier: str, code: str) -> dict:
+    # Create the authorization code grant request body
+    auth_header = _get_client_auth_header()
 
     # Send a request to the token URL to exchange the authorization code for an access token
     token_response = requests.post(
@@ -45,7 +50,7 @@ def _get_token(code_verifier: str, code: str) -> dict:
             "redirect_uri": REDIRECT_URL,
             "code": code,
         },
-        headers={"Authorization": auth_header},
+        headers=auth_header,
         timeout=5,
     )
 
@@ -126,3 +131,35 @@ def callback(request: Request, code: str, state: str) -> Response:
         content=json.dumps(user_profile_response.json(), indent=4),
         media_type="application/json",
     )
+
+
+def refresh_tokens():
+    all_tokens = get_all_tokens_from_db()
+    for token in all_tokens:
+        expire_time = token.created + token.token_response.expires_in
+        # one hour leeway
+        if expire_time < int(time.time()) - 60 * 60:
+            refresh_token(token)
+
+
+def refresh_token(token: TokenInfo) -> TokenInfo:
+    refresh_token = token.token_response.refresh_token
+    auth_header = _get_client_auth_header()
+
+    token_response = requests.post(
+        TOKEN_URL,
+        data={
+            "grant_type": "refresh_token",
+            "refresh_token": refresh_token,
+        },
+        headers={
+            **auth_header,
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        timeout=5,
+    )
+
+    token.token_response = TokenResponse.model_validate(token_response.json())
+    token.created = int(time.time())
+
+    insert_token_to_db(token)
