@@ -3,8 +3,8 @@ Handles user Fitbit authentication and receiving OAuth token.
 """
 
 from fastapi import APIRouter, Depends, HTTPException
-from .db import insert_token, get_token
-from .model import Token
+from db import insert_token, get_token
+from models import Token
 
 router = APIRouter()
 
