@@ -20,11 +20,11 @@ meta = MetaData()
 tokens = Table(
     "Tokens",
     meta,
-    Column("id", Integer, primary_key=True),
+    # Column("user_id", String),
+    # user_id should be the primary key
+    Column("user_id", String, primary_key=True),
     Column("access_token", String),
     Column("refresh_token", String),
-    # user_id
-    Column("user_id", String),
     # user profile data
     Column("user_profile", JSON),
 )
@@ -35,7 +35,8 @@ def create_db():
 
 
 def create_db_if_needed():
-    if not inspect(engine).has_table(engine, "Tokens"):
+    if not inspect(engine).has_table("Tokens"):
+        print("creating db")
         create_db()
 
 
@@ -58,8 +59,8 @@ def get_token_from_db(token_id: int) -> Token:
     values = conn.execute(select_query).fetchone()
     conn.close()
     return Token(
-        access_token=values[1],
-        refresh_token=values[2],
-        user_id=values[3],
-        user_profile=values[4],
+        access_token=values["access_token"],
+        refresh_token=values["refresh_token"],
+        user_id=values["user_id"],
+        user_profile=values["user_profile"],
     )

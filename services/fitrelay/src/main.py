@@ -3,6 +3,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from auth import router as auth_router
 from constants import SESSION_MIDDLEWARE_SECRET
+from db import create_db_if_needed
 
 
 app = FastAPI()
@@ -15,6 +16,12 @@ app.add_middleware(
 
 
 app.include_router(auth_router, tags=["Authentication"])
+
+
+# on app start up create the db if needed
+@app.on_event("startup")
+def startup_event():
+    create_db_if_needed()
 
 
 # @app.get("/token/{token_id}")
