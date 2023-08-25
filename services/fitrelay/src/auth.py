@@ -111,6 +111,15 @@ def callback(request: Request, code: str, state: str) -> Response:
         timeout=5,
     )
 
+    # Save the token in the database
+    token = Token(
+        access_token=token_response["access_token"],
+        refresh_token=token_response["refresh_token"],
+        user_id=token_response["user_id"],
+        user_profile=user_profile_response.json(),
+    )
+    insert_token_to_db(token)
+
     # Return the response from the protected resource
     return Response(
         content=json.dumps(user_profile_response.json(), indent=4),
