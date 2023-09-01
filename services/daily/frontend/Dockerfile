@@ -1,5 +1,5 @@
 # Stage 1 - the build process
-FROM node:14 AS build-deps
+FROM node:20 AS build-deps
 WORKDIR /usr/src/app
 
 # Copy 'package.json' and 'package-lock.json' (if available)
