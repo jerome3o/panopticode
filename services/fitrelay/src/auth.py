@@ -138,7 +138,7 @@ def refresh_tokens(leeway: int = 3600):
     for token in all_tokens:
         expire_time = token.created + token.token_response.expires_in
         # one hour leeway
-        if expire_time < int(time.time()) - leeway:
+        if expire_time < int(time.time()) + leeway:
             refresh_token(token)
 
 
