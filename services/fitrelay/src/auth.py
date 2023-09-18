@@ -133,7 +133,7 @@ def callback(request: Request, code: str, state: str) -> Response:
     )
 
 
-def refresh_tokens(leeway: int = 3600):
+def refresh_tokens(leeway: int = 2 * 3600):
     all_tokens = get_all_tokens_from_db()
     for token in all_tokens:
         expire_time = token.created + token.token_response.expires_in
