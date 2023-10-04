@@ -1,3 +1,4 @@
+from typing import List
 from datetime import datetime, time
 import os
 
@@ -53,6 +54,13 @@ async def create_record(record: DailySelfReportTransfer):
     )
     storage_record.id = str(result.inserted_id)
     return storage_record
+
+
+@app.get("/reports/", response_model=List[DailySelfReportStorage])
+async def create_record():
+    # get all records, sorted by reversed created_timestamp, cast to DailySelfReportStorage, return
+    cursor = app.mongodb["daily_self_report"].find()
+    return [DailySelfReportStorage.model_validate(record) async for record in cursor]
 
 
 @app.put("/reports/{id}/", response_model=DailySelfReportStorage)
