@@ -4,6 +4,7 @@ import webbrowser
 import pandas as pd
 from altair import Chart
 from requests import get
+import datetime
 
 _URL = "http://localhost:8000/reports/"
 
@@ -17,14 +18,19 @@ def main():
                 "tiredness": report["report"]["tiredness"],
                 "stress": report["report"]["stress"],
                 "notes": report["report"]["notes"],
-                "date": report["created_timestamp"],
+                "date": datetime.datetime.fromisoformat(report["created_timestamp"]),
             }
             for report in reports
         ]
     )
     print(df)
 
-    c = Chart(df).mark_line(point=True).encode(x="date", y="happiness", tooltip="notes")
+    c = (
+        Chart(df)
+        .mark_line(point=True)
+        .encode(x="date", y="stress", tooltip="notes")
+        .properties(width="container")
+    )
     Path("tmp.html").write_text(c.to_html())
     webbrowser.open("tmp.html")
 
