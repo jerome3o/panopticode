@@ -12,3 +12,4 @@ analysis/static/
 analysis
 .pyc
 scratch/
+tmp.html
