@@ -25,10 +25,17 @@ def main():
     )
     print(df)
 
+    df = df.melt(
+        value_vars=["happiness", "tiredness", "stress"],
+        value_name="level",
+        var_name="metric",
+        id_vars=["date", "notes"],
+    )
+
     c = (
         Chart(df)
         .mark_line(point=True)
-        .encode(x="date", y="stress", tooltip="notes")
+        .encode(x="date", y="level", color="metric", tooltip="notes")
         .properties(width="container")
     )
     Path("tmp.html").write_text(c.to_html())
