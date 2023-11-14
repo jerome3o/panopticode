@@ -1,5 +1,7 @@
 <script>
-    import Report from "../components/Report.svelte";
+	import Report from '../components/Report.svelte';
 </script>
 
-<Report></Report>
+<Report />
+
+<a href="/viewer" rel="prefetch">Link Text</a>
