@@ -11,6 +11,8 @@ RUN npm install
 # Bundle app source
 COPY . .
 
+ARG VITE_BACKEND_URL=http://localhost:8000/
+
 # Build for production.
 RUN npm run build
 
@@ -18,7 +20,7 @@ RUN npm run build
 FROM nginx:1.17.9-alpine
 
 # Copy nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy build output from Stage 1
 COPY --from=build-deps /usr/src/app/build /usr/share/nginx/html
