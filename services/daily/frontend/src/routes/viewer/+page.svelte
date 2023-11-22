@@ -28,6 +28,11 @@
 
 					text = data[index].report.notes;
 				});
+				plotElement.on('plotly_click', (event) => {
+					var index = event.points[0].pointNumber;
+
+					text = data[index].report.notes;
+				});
 			});
 		});
 	});
