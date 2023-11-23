@@ -38,7 +38,7 @@
 	});
 </script>
 
-<h1>Hey test</h1>
+<h1>Happiness Levels</h1>
 <div bind:this={plotElement} id="tester" style="width:100%;height:100%;" />
 <pre>{text}</pre>
 
