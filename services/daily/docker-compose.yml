@@ -9,7 +9,7 @@ services:
   daily-backend:
     build:
       context: ./server
-      dockerfile: ./server/Dockerfile
+      dockerfile: ./Dockerfile
       args:
         - VITE_BACKEND_URL=${BACKEND_URL}
     restart: unless-stopped
@@ -24,7 +24,7 @@ services:
   daily-frontend:
     build:
       context: ./frontend
-      dockerfile: ./frontend/docker/Dockerfile
+      dockerfile: ./docker/Dockerfile
     restart: unless-stopped
     networks:
       - daily-net
