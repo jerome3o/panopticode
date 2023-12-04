@@ -1,0 +1,51 @@
+version: '3'
+
+# required env vars
+# BACKEND_URL
+# MONGO_USER
+# MONGO_PASSWORD
+
+services:
+  daily-backend:
+    build:
+      context: ./server
+      dockerfile: ./server/Dockerfile
+      args:
+        - VITE_BACKEND_URL=${BACKEND_URL}
+    restart: unless-stopped
+    ports:
+      - 8000:8000
+    networks:
+      - daily-net
+    environment:
+      MONGODB_CONNECTION_STRING: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongodb:27017
+      MONGODB_DATABASE: diary
+
+  daily-frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./frontend/docker/Dockerfile
+    restart: unless-stopped
+    networks:
+      - daily-net
+    ports:
+      - 80:80
+
+  mongodb:
+    image: mongo
+    restart: unless-stopped
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - daily-net
+
+networks:
+  daily-net:
+
+volumes:
+  mongo_data:
