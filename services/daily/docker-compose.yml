@@ -1,9 +1,10 @@
 version: '3'
 
-# required env vars
+# required env vars:
 # BACKEND_URL
 # MONGO_USER
 # MONGO_PASSWORD
+# BULB_IP
 
 services:
   daily-backend:
@@ -30,6 +31,17 @@ services:
       - daily-net
     ports:
       - 80:80
+
+  lights-daemon:
+    build:
+      context: ./lights
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    networks:
+      - daily-net
+    environment:
+      BULB_IP: ${BULB_IP}
+      REPORT_URL: http://daily-backend:8000/reports/today/
 
   mongodb:
     image: mongo
