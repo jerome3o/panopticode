@@ -10,6 +10,12 @@
 	onMount(() => {
 		fetch(`${url}reports/`).then((data) => {
 			return data.json().then((data) => {
+				// sort data by created_timestamp
+
+				data.sort((a, b) => {
+					return a['created_timestamp'] - b['created_timestamp'];
+				});
+
 				const layout = {
 					title: 'Line and Scatter Plot'
 				};
