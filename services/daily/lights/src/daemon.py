@@ -13,6 +13,7 @@ _logger = logging.getLogger(__name__)
 
 
 def _is_evening():
+    _logger.debug(f"Current hour: {datetime.datetime.now().hour}")
     return datetime.datetime.now().hour >= 18
 
 
@@ -31,8 +32,10 @@ async def daemon():
         _logger.info(f"Reported today: {reported_today}")
 
         if not reported_today and _is_evening():
+            _logger.info("Turning on bulb")
             bulb.turn_on()
         else:
+            _logger.info("Turning off bulb")
             bulb.turn_off()
 
         await asyncio.sleep(5)
