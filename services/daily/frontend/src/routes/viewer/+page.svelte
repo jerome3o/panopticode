@@ -17,7 +17,8 @@
 				});
 
 				const layout = {
-					title: 'Line and Scatter Plot'
+					title: 'Line and Scatter Plot',
+					yaxis_range: [0, 100]
 				};
 
 				const trace1 = {
