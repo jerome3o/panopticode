@@ -21,7 +21,9 @@ class DailySelfReportMongoDB(DailySelfReportDB):
     async def initialise(self):
         pass
 
-    async def create_report(self, record: DailySelfReportTransfer) -> str:
+    async def create_report(
+        self, record: DailySelfReportTransfer
+    ) -> DailySelfReportStorage:
         storage_record = DailySelfReportStorage.model_validate(
             record.model_dump(),
         )

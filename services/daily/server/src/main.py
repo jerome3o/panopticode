@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from constants import MONGODB_DATABASE, MONGODB_CONNECTION_STRING
 from db.mongo import DailySelfReportMongoDB
+from db.sqlite import DailySelfReportSQLite
 from models import (
     DailySelfReportStorage,
     DailySelfReportTransfer,
@@ -29,11 +30,12 @@ app.add_middleware(
 # todo dependency inject db client
 @app.on_event("startup")
 async def startup_db_client():
-    print(MONGODB_CONNECTION_STRING, MONGODB_DATABASE)
-    app.db_client = DailySelfReportMongoDB(
-        MONGODB_CONNECTION_STRING,
-        MONGODB_DATABASE,
-    )
+    # app.db_client = DailySelfReportMongoDB(
+    #     MONGODB_CONNECTION_STRING,
+    #     MONGODB_DATABASE,
+    # )
+    app.db_client = DailySelfReportSQLite("test.db")
+    await app.db_client.initialise()
 
 
 @app.on_event("shutdown")

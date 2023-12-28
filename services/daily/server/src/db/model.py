@@ -14,7 +14,9 @@ class DailySelfReportDB(ABC):
         pass
 
     @abstractmethod
-    async def create_report(self, record: DailySelfReportTransfer) -> str:
+    async def create_report(
+        self, record: DailySelfReportTransfer
+    ) -> DailySelfReportStorage:
         pass
 
     @abstractmethod

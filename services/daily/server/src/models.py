@@ -30,6 +30,8 @@ class DailySelfReportTransfer(BaseModel):
 
 # Data Storage Object
 class DailySelfReportStorage(DailySelfReportTransfer):
+    # TODO(j.swannack): This needs to abstracted to just str,
+    #   and the mongo client handles the conversion
     id: BsonId = Field(None, alias="_id")
     modified_timestamp: Optional[datetime] = None
     created_timestamp: Optional[datetime] = None

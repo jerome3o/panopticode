@@ -2,7 +2,7 @@
 	import Plotly from 'plotly.js/dist/plotly.js';
 	import { onMount } from 'svelte';
 
-	let url: string = import.meta.env.VITE_BACKEND_URL;
+	let url: string = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000/';
 
 	let plotElement;
 	let text = 'Hover over a data point to see the report';

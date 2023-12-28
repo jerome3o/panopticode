@@ -13,3 +13,4 @@ analysis
 .pyc
 scratch/
 tmp.html
+*.db
