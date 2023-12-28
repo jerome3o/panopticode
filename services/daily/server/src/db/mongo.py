@@ -1,5 +1,3 @@
-# db.py
-
 from typing import List, Optional
 from datetime import datetime, timedelta, time
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -12,12 +10,16 @@ from models import (
     TodayResponse,
     TODAY_MISSING_RESPONSE,
 )
+from db.model import DailySelfReportDB
 
 
-class DailySelfReportMongoDB:
+class DailySelfReportMongoDB(DailySelfReportDB):
     def __init__(self, conn_str, db_name):
         self.client = AsyncIOMotorClient(conn_str)
         self.collection = self.client[db_name][MONGODB_COLLECTION_NAME]
+
+    async def initialise(self):
+        pass
 
     async def create_report(self, record: DailySelfReportTransfer) -> str:
         storage_record = DailySelfReportStorage.model_validate(
@@ -70,5 +72,5 @@ class DailySelfReportMongoDB:
             return TodayResponse(value=result)
         return TODAY_MISSING_RESPONSE
 
-    def close(self):
+    async def close(self):
         self.client.close()
