@@ -4,6 +4,24 @@ This is a project to leverage self monitoring and social/brain hacks to help mot
 
 ## Setup
 
+### VsCode
+
+If you want to use the example launch.json config
+
+```sh
+mkdir .vscode
+cp .vscode.example/launch.json .vscode/launch.json
+```
+
+Or if you want to track diffs to the launch.json:
+
+```sh
+mkdir .vscode
+ln -s `pwd`/.vscode.example/launch.json `pwd`/.vscode/launch.json
+```
+
+## Setup Legacy
+
 ### Env vars
 
 Set up env files and fill in blanks:

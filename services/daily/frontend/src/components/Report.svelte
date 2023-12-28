@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ReportInput from "./report/ReportInput.svelte";
 
-    let url: string = import.meta.env.VITE_BACKEND_URL;
+    let url: string = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000/";
     if (url[url.length - 1] !== '/') url += '/';
 
     let report = {

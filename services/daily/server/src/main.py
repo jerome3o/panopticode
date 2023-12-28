@@ -1,17 +1,14 @@
 from typing import List
-from datetime import datetime, time
-import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
-from bson import ObjectId
 
+from constants import MONGODB_DATABASE, MONGODB_CONNECTION_STRING
+from db.mongo import DailySelfReportMongoDB
 from models import (
     DailySelfReportStorage,
     DailySelfReportTransfer,
     TodayResponse,
-    TODAY_MISSING_RESPONSE,
 )
 
 
@@ -28,72 +25,42 @@ app.add_middleware(
 
 # TODO(j.swannack): api keys
 
-_MONGODB_CONNECTION_STRING = os.environ.get("MONGODB_CONNECTION_STRING")
-_MONGODB_DATABASE = os.environ.get("MONGODB_DATABASE")
-
 
 # todo dependency inject db client
 @app.on_event("startup")
 async def startup_db_client():
-    app.mongodb_client = AsyncIOMotorClient(_MONGODB_CONNECTION_STRING)
-    app.mongodb = app.mongodb_client[_MONGODB_DATABASE]
+    print(MONGODB_CONNECTION_STRING, MONGODB_DATABASE)
+    app.db_client = DailySelfReportMongoDB(
+        MONGODB_CONNECTION_STRING,
+        MONGODB_DATABASE,
+    )
 
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    app.mongodb_client.close()
+    app.db_client.close()
 
 
 @app.post("/reports/", response_model=DailySelfReportStorage)
-async def create_record(record: DailySelfReportTransfer):
-    storage_record = DailySelfReportStorage.model_validate(record.model_dump())
-    storage_record.modified_timestamp = datetime.now()
-    storage_record.created_timestamp = datetime.now()
-    result = await app.mongodb["daily_self_report"].insert_one(
-        storage_record.model_dump()
-    )
-    storage_record.id = str(result.inserted_id)
-    return storage_record
+async def create_report(record: DailySelfReportTransfer):
+    return await app.db_client.create_report(record)
 
 
 @app.get("/reports/", response_model=List[DailySelfReportStorage])
-async def create_record():
-    # get all records, sorted by reversed created_timestamp, cast to DailySelfReportStorage, return
-    cursor = app.mongodb["daily_self_report"].find()
-    return [DailySelfReportStorage.model_validate(record) async for record in cursor]
+async def get_reports():
+    return await app.db_client.get_reports()
 
 
 @app.put("/reports/{id}/", response_model=DailySelfReportStorage)
-async def update_record(id: str, record: DailySelfReportTransfer):
-    storage_record = DailySelfReportStorage.model_validate(record.model_dump())
-    storage_record.modified_timestamp = datetime.now()
-
-    result = await app.mongodb["daily_self_report"].update_one(
-        {"_id": ObjectId(id)},
-        {
-            "$set": storage_record.model_dump(
-                exclude_none=True,
-                exclude_unset=True,
-            )
-        },
-    )
-
-    if result.modified_count:
-        storage_record.id = id
-        return storage_record
-    return None
+async def update_report(id: str, record: DailySelfReportTransfer):
+    # TODO(j.swannack): reconcile types
+    return await app.db_client.update_report(id, record)
 
 
 # Endpoint to check if there has been a report today
 @app.get("/reports/today/", response_model=TodayResponse)
-async def get_today_record():
-    today = datetime.combine(datetime.now().date(), time())
-    result = await app.mongodb["daily_self_report"].find_one(
-        {"created_timestamp": {"$gte": today}}
-    )
-    if result:
-        return TodayResponse(value=result)
-    return TODAY_MISSING_RESPONSE
+async def get_todays_record():
+    return await app.db_client.get_todays_report()
 
 
 if __name__ == "__main__":
