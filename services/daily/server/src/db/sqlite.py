@@ -57,9 +57,22 @@ class DailySelfReportSQLite(DailySelfReportDB):
     async def update_report(
         self, id: str, record: DailySelfReportTransfer
     ) -> Optional[DailySelfReportStorage]:
-        data = DailySelfReportStorage.model_validate(
-            record.model_dump()
-        ).model_dump_json()
+        new_report_content = DailySelfReportTransfer.model_validate(
+            record.model_dump(),
+        )
+
+        cursor = self.conn.execute("SELECT id, data FROM reports WHERE id=?", (id,))
+        row = cursor.fetchone()
+
+        if row is None:
+            # todo: raise exception?
+            return None
+
+        existing_report = get_report_storage(row)
+        existing_report.report = new_report_content.report
+
+        data = existing_report.model_dump_json()
+
         cursor = self.conn.execute("UPDATE reports SET data=? WHERE id=?", (data, id))
         self.conn.commit()
         if cursor.rowcount > 0:
