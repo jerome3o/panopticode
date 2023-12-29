@@ -8,9 +8,9 @@
       "name": "Daily Backend",
       "type": "python",
       "request": "launch",
-      "program": "services/daily/server/src/main.py",
+      "program": "services/daily/backend/src/main.py",
       "env": {
-        "PYTHONPATH": "${workspaceFolder}/services/daily/server/src"
+        "PYTHONPATH": "${workspaceFolder}/services/daily/backend/src"
       },
       "console": "integratedTerminal",
       "justMyCode": true
