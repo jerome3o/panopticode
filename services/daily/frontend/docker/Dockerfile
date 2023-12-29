@@ -11,8 +11,6 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-ARG VITE_BACKEND_URL=http://localhost:8000/
-
 # Build for production.
 RUN npm run build
 
