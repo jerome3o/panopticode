@@ -1,4 +1,5 @@
 from typing import List, Optional
+from pathlib import Path
 from datetime import datetime, timedelta
 import sqlite3
 
@@ -19,6 +20,7 @@ def get_report_storage(row):
 
 class DailySelfReportSQLite(DailySelfReportDB):
     def __init__(self, db_path):
+        Path(db_path).parent.mkdir(parents=True, exist_ok=True)
         self.conn = sqlite3.connect(db_path)
 
     async def initialise(self):

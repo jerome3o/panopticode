@@ -12,3 +12,9 @@ MONGODB_DATABASE = os.environ.get(
 
 
 MONGODB_COLLECTION_NAME = "daily_self_report"
+
+
+SQLITE_DATABASE = os.environ.get(
+    "SQLITE_DATABASE",
+    "data/diary.db",
+)
