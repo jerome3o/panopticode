@@ -2,18 +2,28 @@
 	import Plotly from 'plotly.js/dist/plotly.js';
 	import { onMount } from 'svelte';
 
+	interface ReportData {
+		id: number;
+		happiness: number;
+		notes: string;
+	}
+
+	interface Report {
+		created_timestamp: string;
+		report: ReportData;
+	}
+
 	let url: string = '/api/';
 
-	let plotElement;
+	let plotElement: HTMLDivElement;
 	let text = 'Hover over a data point to see the report';
 
 	onMount(() => {
 		fetch(`${url}reports/`).then((data) => {
 			return data.json().then((data) => {
-				// sort data by created_timestamp
-
-				data.sort((a, b) => {
-					return a['created_timestamp'] - b['created_timestamp'];
+				// sort data by created_timestamp, convert to datetime and compare
+				data.sort((a: Report, b: Report) => {
+					return a['created_timestamp'].localeCompare(b['created_timestamp']);
 				});
 
 				const layout = {
